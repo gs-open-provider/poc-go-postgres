@@ -1,1 +1,6 @@
 logger-output-path:
+
+pgdb:
+  username:
+  password:
+  database:
