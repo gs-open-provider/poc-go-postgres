@@ -58,4 +58,7 @@ func main() {
 	err = database.UpdateUser(db, &modifiedUser)
 	err = database.SelectOneUser(db, 5)
 
+	err = database.DeleteUser(db, 5)
+	err = database.SelectOneUser(db, 5)
+
 }

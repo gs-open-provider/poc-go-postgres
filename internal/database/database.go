@@ -76,3 +76,15 @@ func UpdateUser(db *pg.DB, modifiedUser *models.User) error {
 	logger.Log.Info("User updated..")
 	return nil
 }
+
+// DeleteUser Function
+func DeleteUser(db *pg.DB, id int64) error {
+	user := &models.User{ID: id}
+	err := db.Delete(user)
+	if err != nil {
+		logger.Log.Error("Delete error: " + err.Error())
+		return err
+	}
+	logger.Log.Info("User deleted..")
+	return nil
+}
