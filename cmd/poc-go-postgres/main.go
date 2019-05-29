@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+	"strconv"
 	"strings"
 
 	"github.com/gs-open-provider/poc-go-postgres/internal/configs"
@@ -31,7 +33,13 @@ func main() {
 	})
 	defer db.Close()
 
-	database.CreateSchema(db)
+	err := database.CreateSchema(db)
+	if err != nil {
+		if strings.Contains(err.Error(), "database \""+dbName+"\" does not exist") {
+			logger.Log.Info("Database " + dbName + " does not exist..")
+			os.Exit(1)
+		}
+	}
 
 	database.SelectAllUsers(db)
 	database.SelectOneUser(db, 3)
@@ -41,7 +49,7 @@ func main() {
 		Name:   "4th User",
 		Emails: []string{"email@gmail.com", "email2@gmail.com"},
 	}
-	err := database.AddNewUser(db, &user)
+	err = database.AddNewUser(db, &user)
 	if err != nil {
 		logger.Log.Error(err.Error())
 		if strings.Contains(err.Error(), "duplicate") {
@@ -50,15 +58,29 @@ func main() {
 	}
 	database.SelectOneUser(db, 5)
 
+	const modifyingUserID int64 = 5
 	modifiedUser := models.User{
-		ID:     5,
+		ID:     modifyingUserID,
 		Name:   "5th User",
 		Emails: []string{"email@gmail.com", "email2@gmail.com"},
 	}
 	err = database.UpdateUser(db, &modifiedUser)
-	err = database.SelectOneUser(db, 5)
+	if err != nil && strings.Contains(err.Error(), "no rows in result set") {
+		logger.Log.Warn("User with the same Primary Key does not exist..")
+	} else {
+		database.SelectOneUser(db, modifyingUserID)
+	}
 
-	err = database.DeleteUser(db, 5)
-	err = database.SelectOneUser(db, 5)
+	const deletingUserID int64 = 5
+	err = database.DeleteUser(db, deletingUserID)
+	if err != nil && strings.Contains(err.Error(), "no rows in result set") {
+		logger.Log.Warn("User with the same Primary Key does not exist..")
+	}
+	err = database.SelectOneUser(db, deletingUserID)
+	if err != nil && strings.Contains(err.Error(), "no rows in result set") {
+		logger.Log.Warn("User with ID of " + strconv.FormatInt(deletingUserID, 10) + " does not exist..")
+	}
+
+	db.Close()
 
 }

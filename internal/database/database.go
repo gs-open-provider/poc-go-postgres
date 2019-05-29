@@ -18,6 +18,7 @@ func CreateSchema(db *pg.DB) error {
 			Temp: false,
 		})
 		if err != nil {
+			logger.Log.Error("Error:" + err.Error())
 			if strings.Contains(err.Error(), "already exists") {
 				logger.Log.Warn("Warning:" + err.Error())
 			} else {
