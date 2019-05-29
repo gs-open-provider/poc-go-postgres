@@ -27,3 +27,31 @@ func CreateSchema(db *pg.DB) error {
 	}
 	return nil
 }
+
+// SelectAllUsers Function
+func SelectAllUsers(db *pg.DB) error {
+	var users []models.User
+	err := db.Model().Table("users").Select(&users)
+	if err != nil {
+		logger.Log.Error("Select error: " + err.Error())
+		return err
+	}
+
+	for _, u := range users {
+		logger.Log.Info(u.String())
+	}
+	return nil
+}
+
+// SelectOneUser exported
+func SelectOneUser(db *pg.DB, id int64) error {
+	user := &models.User{ID: id}
+	err := db.Select(user)
+	if err != nil {
+		logger.Log.Error("Select error: " + err.Error())
+		return err
+	}
+
+	logger.Log.Info(user.String())
+	return nil
+}

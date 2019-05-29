@@ -29,4 +29,6 @@ func main() {
 	defer db.Close()
 
 	database.CreateSchema(db)
+	database.SelectAllUsers(db)
+	database.SelectOneUser(db, 3)
 }
