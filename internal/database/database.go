@@ -43,7 +43,7 @@ func SelectAllUsers(db *pg.DB) error {
 	return nil
 }
 
-// SelectOneUser exported
+// SelectOneUser Function
 func SelectOneUser(db *pg.DB, id int64) error {
 	user := &models.User{ID: id}
 	err := db.Select(user)
@@ -56,11 +56,23 @@ func SelectOneUser(db *pg.DB, id int64) error {
 	return nil
 }
 
-// AddNewUser exported
+// AddNewUser Function
 func AddNewUser(db *pg.DB, user *models.User) error {
 	if err := db.Insert(user); err != nil {
 		logger.Log.Error("Insert Error: " + err.Error())
 		return err
 	}
+	logger.Log.Info("User added..")
+	return nil
+}
+
+// UpdateUser Function
+func UpdateUser(db *pg.DB, modifiedUser *models.User) error {
+	err := db.Update(modifiedUser)
+	if err != nil {
+		logger.Log.Error("Update error: " + err.Error())
+		return err
+	}
+	logger.Log.Info("User updated..")
 	return nil
 }

@@ -38,7 +38,7 @@ func main() {
 
 	user := models.User{
 		ID:     5,
-		Name:   "5th User",
+		Name:   "4th User",
 		Emails: []string{"email@gmail.com", "email2@gmail.com"},
 	}
 	err := database.AddNewUser(db, &user)
@@ -49,5 +49,13 @@ func main() {
 		}
 	}
 	database.SelectOneUser(db, 5)
+
+	modifiedUser := models.User{
+		ID:     5,
+		Name:   "5th User",
+		Emails: []string{"email@gmail.com", "email2@gmail.com"},
+	}
+	err = database.UpdateUser(db, &modifiedUser)
+	err = database.SelectOneUser(db, 5)
 
 }
