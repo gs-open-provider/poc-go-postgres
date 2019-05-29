@@ -55,3 +55,12 @@ func SelectOneUser(db *pg.DB, id int64) error {
 	logger.Log.Info(user.String())
 	return nil
 }
+
+// AddNewUser exported
+func AddNewUser(db *pg.DB, user *models.User) error {
+	if err := db.Insert(user); err != nil {
+		logger.Log.Error("Insert Error: " + err.Error())
+		return err
+	}
+	return nil
+}

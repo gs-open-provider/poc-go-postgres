@@ -1,9 +1,12 @@
 package main
 
 import (
+	"strings"
+
 	"github.com/gs-open-provider/poc-go-postgres/internal/configs"
 	"github.com/gs-open-provider/poc-go-postgres/internal/database"
 	"github.com/gs-open-provider/poc-go-postgres/internal/logger"
+	"github.com/gs-open-provider/poc-go-postgres/models"
 
 	"github.com/go-pg/pg"
 	"github.com/spf13/viper"
@@ -29,6 +32,22 @@ func main() {
 	defer db.Close()
 
 	database.CreateSchema(db)
+
 	database.SelectAllUsers(db)
 	database.SelectOneUser(db, 3)
+
+	user := models.User{
+		ID:     5,
+		Name:   "5th User",
+		Emails: []string{"email@gmail.com", "email2@gmail.com"},
+	}
+	err := database.AddNewUser(db, &user)
+	if err != nil {
+		logger.Log.Error(err.Error())
+		if strings.Contains(err.Error(), "duplicate") {
+			logger.Log.Info("User already exists, so skipping insert..")
+		}
+	}
+	database.SelectOneUser(db, 5)
+
 }
